@@ -7,16 +7,17 @@ class Order {
   double price;
   double totalPrice;
 
-  Order({
-    required this.status,
-    required this.product,
-    required this.price,
-    required this.totalPrice,
-    required this.nombreVendu
-  });
+  Order(
+      {required this.status,
+      required this.product,
+      required this.price,
+      required this.totalPrice,
+      required this.nombreVendu});
 }
 
 class SalesPage extends StatefulWidget {
+  const SalesPage({super.key});
+
   @override
   _SalesPageState createState() => _SalesPageState();
 }
@@ -28,7 +29,7 @@ class _SalesPageState extends State<SalesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Applications de ventes'),
+        title: const Text('Applications de ventes'),
       ),
       body: ListView.builder(
         itemCount: orders.length,
@@ -36,7 +37,8 @@ class _SalesPageState extends State<SalesPage> {
           return ListTile(
             title: Text(orders[index].product),
             subtitle: Text('Status: ${orders[index].status}'),
-            trailing: Text('Price: \$${orders[index].price.toStringAsFixed(2)}'),
+            trailing:
+                Text('Price: \$${orders[index].price.toStringAsFixed(2)}'),
             onTap: () {
               // Modify order
               _editOrder(index);
@@ -49,7 +51,7 @@ class _SalesPageState extends State<SalesPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           // Add new order
           _addOrder();
@@ -69,38 +71,38 @@ class _SalesPageState extends State<SalesPage> {
         double totalPrice = 0.0;
 
         return AlertDialog(
-          title: Text('Ajouter une vente'),
+          title: const Text('Ajouter une vente'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                decoration: InputDecoration(labelText: 'Status'),
+                decoration: const InputDecoration(labelText: 'Status'),
                 onChanged: (value) {
                   status = value;
                 },
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Produit'),
+                decoration: const InputDecoration(labelText: 'Produit'),
                 onChanged: (value) {
                   product = value;
                 },
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Nombre Vendu'),
+                decoration: const InputDecoration(labelText: 'Nombre Vendu'),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   nombreVendu = double.parse(value);
                 },
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Prix'),
+                decoration: const InputDecoration(labelText: 'Prix'),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   price = double.parse(value);
                 },
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Prix Total'),
+                decoration: const InputDecoration(labelText: 'Prix Total'),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   totalPrice = double.parse(value);
@@ -110,13 +112,13 @@ class _SalesPageState extends State<SalesPage> {
           ),
           actions: [
             TextButton(
-              child: Text('Annuler'),
+              child: const Text('Annuler'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Ajouter'),
+              child: const Text('Ajouter'),
               onPressed: () {
                 setState(() {
                   orders.add(
@@ -149,26 +151,26 @@ class _SalesPageState extends State<SalesPage> {
         double nombreVendu = orders[index].nombreVendu;
 
         return AlertDialog(
-          title: Text('Modifier une commande'),
+          title: const Text('Modifier une commande'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                decoration: InputDecoration(labelText: 'Status'),
+                decoration: const InputDecoration(labelText: 'Status'),
                 onChanged: (value) {
                   status = value;
                 },
                 controller: TextEditingController(text: status),
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Produit'),
+                decoration: const InputDecoration(labelText: 'Produit'),
                 onChanged: (value) {
                   product = value;
                 },
                 controller: TextEditingController(text: product),
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'NombreVendu'),
+                decoration: const InputDecoration(labelText: 'NombreVendu'),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   nombreVendu = double.parse(value);
@@ -176,7 +178,7 @@ class _SalesPageState extends State<SalesPage> {
                 controller: TextEditingController(text: nombreVendu.toString()),
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Prix'),
+                decoration: const InputDecoration(labelText: 'Prix'),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   price = double.parse(value);
@@ -184,7 +186,7 @@ class _SalesPageState extends State<SalesPage> {
                 controller: TextEditingController(text: price.toString()),
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Prix Total'),
+                decoration: const InputDecoration(labelText: 'Prix Total'),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   totalPrice = double.parse(value);
@@ -195,13 +197,13 @@ class _SalesPageState extends State<SalesPage> {
           ),
           actions: [
             TextButton(
-              child: Text('Annuler'),
+              child: const Text('Annuler'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Sauvegarder'),
+              child: const Text('Sauvegarder'),
               onPressed: () {
                 setState(() {
                   orders[index].status = status;
@@ -224,17 +226,18 @@ class _SalesPageState extends State<SalesPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Supprimer une vente'),
-          content: Text('Êtes vous sûrs de vouloir supprimer cette vente?'),
+          title: const Text('Supprimer une vente'),
+          content:
+              const Text('Êtes vous sûrs de vouloir supprimer cette vente?'),
           actions: [
             TextButton(
-              child: Text('Annuler'),
+              child: const Text('Annuler'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Supprimer'),
+              child: const Text('Supprimer'),
               onPressed: () {
                 setState(() {
                   orders.removeAt(index);
