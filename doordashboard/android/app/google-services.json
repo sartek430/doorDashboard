@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "523884872665",
+    "project_id": "doordashboard",
+    "storage_bucket": "doordashboard.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523884872665:android:cd28e9daa977345f1e8fc8",
+        "android_client_info": {
+          "package_name": "com.example.doordashboard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBG--RPmsdNkis-vX3wP-Ehi4YBFSOUXsI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
