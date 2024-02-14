@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:doordashboard/firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Order {
@@ -28,6 +26,7 @@ class SalesPage extends StatefulWidget {
 
 class _SalesPageState extends State<SalesPage> {
   List<Order> orders = [];
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -35,19 +34,31 @@ class _SalesPageState extends State<SalesPage> {
       appBar: AppBar(
         title: const Text('Applications de ventes'),
       ),
-      body: ListView.builder(
-        itemCount: orders.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(orders[index].product),
-            subtitle: Text('Status: ${orders[index].status}'),
-            trailing:
-                Text('Price: \$${orders[index].price.toStringAsFixed(2)}'),
-            onTap: () {
-              _editOrder(index);
-            },
-            onLongPress: () {
-              _deleteOrder(index);
+      body: StreamBuilder<QuerySnapshot>(
+        stream: firestore.collection('sales').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final orders = snapshot.data!.docs;
+          return ListView.builder(
+            itemCount: orders.length,
+            itemBuilder: (context, index) {
+              final orderData = orders[index].data() as Map<String, dynamic>;
+              final product = orderData['product'];
+              final status = orderData['status'];
+              final price = orderData['price'];
+              return ListTile(
+                title: Text(product),
+                subtitle: Text('Status: $status'),
+                trailing: Text('Price: \$${price.toStringAsFixed(2)}'),
+                onTap: () {
+                  _editOrder(index);
+                },
+                onLongPress: () {
+                  _deleteOrder(index);
+                },
+              );
             },
           );
         },
