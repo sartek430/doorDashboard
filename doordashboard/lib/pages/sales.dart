@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:doordashboard/firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Order {
   String status;
@@ -15,18 +18,21 @@ class Order {
       required this.nombreVendu});
 }
 
-class SalesPage extends StatefulWidget {
+class SalesPage extends StatefulWidget {  
+  
   const SalesPage({super.key});
 
   @override
-  _SalesPageState createState() => _SalesPageState();
+  _SalesPageState createState() => _SalesPageState();  
+
 }
 
 class _SalesPageState extends State<SalesPage> {
-  List<Order> orders = [];
+  List<Order> orders = [];  
 
   @override
   Widget build(BuildContext context) {
+        
     return Scaffold(
       appBar: AppBar(
         title: const Text('Applications de ventes'),
@@ -40,23 +46,25 @@ class _SalesPageState extends State<SalesPage> {
             trailing:
                 Text('Price: \$${orders[index].price.toStringAsFixed(2)}'),
             onTap: () {
-              // Modify order
               _editOrder(index);
             },
-            onLongPress: () {
-              // Delete order
+            onLongPress: () {              
               _deleteOrder(index);
+              
             },
           );
         },
       ),
+      
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          // Add new order
-          _addOrder();
+          _addOrder();    
+          
         },
       ),
+
+      
     );
   }
 
@@ -119,7 +127,7 @@ class _SalesPageState extends State<SalesPage> {
             ),
             TextButton(
               child: const Text('Ajouter'),
-              onPressed: () {
+              onPressed: () async {
                 setState(() {
                   orders.add(
                     Order(
@@ -130,7 +138,9 @@ class _SalesPageState extends State<SalesPage> {
                       totalPrice: totalPrice,
                     ),
                   );
-                });
+                });                
+                
+                await FirebaseFirestore.instance.collection('sales').add({'status': status, 'product': product, 'nombreVendu': nombreVendu, 'price': price, 'totalPrice': totalPrice});
                 Navigator.of(context).pop();
               },
             ),
@@ -242,6 +252,7 @@ class _SalesPageState extends State<SalesPage> {
                 setState(() {
                   orders.removeAt(index);
                 });
+                                
                 Navigator.of(context).pop();
               },
             ),
