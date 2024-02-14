@@ -1,4 +1,7 @@
+import 'package:doordashboard/pages/auth.dart';
+
 import 'package:doordashboard/pages/sales.dart';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -20,26 +23,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      routes: {
+        '/auth': (context) => const AuthPage(),
+      },
       home: const SalesPage(),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-      ),
-      body: const Center(
-        child: Text(
-          'Welcome to Flutter!',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
     );
   }
 }
