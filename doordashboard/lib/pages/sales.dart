@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:doordashboard/firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Order {
   String status;
@@ -41,11 +44,9 @@ class _SalesPageState extends State<SalesPage> {
             trailing:
                 Text('Price: \$${orders[index].price.toStringAsFixed(2)}'),
             onTap: () {
-              // Modify order
               _editOrder(index);
             },
             onLongPress: () {
-              // Delete order
               _deleteOrder(index);
             },
           );
@@ -54,7 +55,6 @@ class _SalesPageState extends State<SalesPage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          // Add new order
           _addOrder();
         },
       ),
@@ -120,7 +120,7 @@ class _SalesPageState extends State<SalesPage> {
             ),
             TextButton(
               child: const Text('Ajouter'),
-              onPressed: () {
+              onPressed: () async {
                 setState(() {
                   orders.add(
                     Order(
@@ -131,6 +131,14 @@ class _SalesPageState extends State<SalesPage> {
                       totalPrice: totalPrice,
                     ),
                   );
+                });
+
+                await FirebaseFirestore.instance.collection('sales').add({
+                  'status': status,
+                  'product': product,
+                  'nombreVendu': nombreVendu,
+                  'price': price,
+                  'totalPrice': totalPrice
                 });
                 Navigator.of(context).pop();
               },
@@ -243,6 +251,7 @@ class _SalesPageState extends State<SalesPage> {
                 setState(() {
                   orders.removeAt(index);
                 });
+
                 Navigator.of(context).pop();
               },
             ),
