@@ -1,125 +1,274 @@
 import 'package:flutter/material.dart';
 
+class Commande {
+  final String projet;
+  final String statut;
+  final double prix;
+  final int nombre;
+  final double prixTotal;
+  final String nomProduit;
+
+  Commande({
+    required this.projet,
+    required this.statut,
+    required this.nomProduit,
+    required this.nombre,
+    required this.prix,    
+    required this.prixTotal,
+    
+  });
+}
 void main() {
-  runApp(const MyApp());
+  runApp(const TodoApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class TodoApp extends StatelessWidget {
+  const TodoApp({Key? key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Commandes',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const TodoList(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class TodoList extends StatefulWidget {
+  const TodoList({Key? key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _TodoListState createState() => _TodoListState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _TodoListState extends State<TodoList> {
+  final List<Commande> _commandesList = [];
+  final TextEditingController _projetController = TextEditingController();
+  final TextEditingController _statusController = TextEditingController();
+  final TextEditingController _nomProduitController = TextEditingController();
+  final TextEditingController _nombreController = TextEditingController();
+  final TextEditingController _prixController = TextEditingController();  
+  final TextEditingController _prixTotalController = TextEditingController();
+  
 
-  void _incrementCounter() {
+  void _addCommande(Commande commande) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _commandesList.add(commande);
+    });
+  }
+
+  void _removeCommande(int index) {
+    setState(() {
+      _commandesList.removeAt(index);
+    });
+  }
+
+  void _editCommande(int index, Commande newCommande) {
+    setState(() {
+      _commandesList[index] = newCommande;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Center(child: Text('Commandes', style: TextStyle(fontSize: 24))),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      body: ListView.builder(
+        itemCount: _commandesList.length,
+        itemBuilder: (context, index) {
+          final commande = _commandesList[index];
+          return Dismissible(
+            key: Key(commande.toString()),
+            onDismissed: (direction) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Commande "${commande.projet}" removed'),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+              _removeCommande(index);
+            },
+            background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: const Icon(Icons.delete, color: Colors.white),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Colors.grey.shade300, width: 1.0),
+                ),
+              ),
+              child: ListTile(
+                title: Text('Projet: ${commande.projet}'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Statut: ${commande.statut}'),
+                    Text('Nom Produit: ${commande.nomProduit}'),
+                    Text('Nombre: ${commande.nombre}'),
+                    Text('Prix: ${commande.prix}'),                    
+                    Text('Prix Total: ${commande.prixTotal}'),                    
+                  ],
+                ),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      _projetController.text = commande.projet;    
+                      _statusController.text = commande.statut;
+                      _nomProduitController.text = commande.nomProduit;
+                      _nombreController.text = commande.nombre.toString();
+                      _prixController.text = commande.prix.toString();                                       
+                      _prixTotalController.text = commande.prixTotal.toString();
+
+                      return AlertDialog(
+                        title: const Text('Modifier Commande'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              controller: _projetController,
+                              decoration: const InputDecoration(labelText: 'Projet'),
+                            ),
+                            TextField(
+                              controller: _statusController,
+                              decoration: const InputDecoration(labelText: 'Statut'),
+                            ),
+                             TextField(
+                              controller: _nomProduitController,
+                              decoration: const InputDecoration(labelText: 'Nom Produit'),
+                            ),
+                            TextField(
+                              controller: _nombreController,
+                              decoration: const InputDecoration(labelText: 'Nombre'),
+                              keyboardType: TextInputType.number,
+                            ),
+                            TextField(
+                              controller: _prixController,
+                              decoration: const InputDecoration(labelText: 'Prix'),
+                              keyboardType: TextInputType.number,
+                            ),                     
+                                                   
+                            TextField(
+                              controller: _prixTotalController,
+                              decoration: const InputDecoration(labelText: 'Prix Total'),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Annuler'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              final newCommande = Commande(
+                                projet: _projetController.text,
+                                statut: _statusController.text,
+                                nomProduit: _nomProduitController.text,
+                                nombre: int.parse(_nombreController.text), 
+                                prix: double.parse(_prixController.text),                           
+                                prixTotal: double.parse(_prixTotalController.text),
+                                
+                              );
+                              _editCommande(index, newCommande);
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Enregistrer'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ],
-        ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              _statusController.clear();
+              _prixController.clear();
+              _projetController.clear();
+              _nombreController.clear();
+              _prixTotalController.clear();
+              _nomProduitController.clear();
+              return AlertDialog(
+                title: const Text('Ajouter Commande'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                     TextField(
+                      controller: _projetController,
+                      decoration: const InputDecoration(labelText: 'Projet'),
+                    ),
+                    TextField(
+                      controller: _statusController,
+                      decoration: const InputDecoration(labelText: 'Statut'),
+                    ),
+                    TextField(
+                      controller: _nomProduitController,
+                      decoration: const InputDecoration(labelText: 'Nom Produit'),
+                    ),
+                    TextField(
+                      controller: _nombreController,
+                      decoration: const InputDecoration(labelText: 'Nombre'),
+                      keyboardType: TextInputType.number,
+                    ),                    
+                    TextField(
+                      controller: _prixController,
+                      decoration: const InputDecoration(labelText: 'Prix'),
+                      keyboardType: TextInputType.number,
+                    ),            
+                               
+                    TextField(
+                      controller: _prixTotalController,
+                      decoration: const InputDecoration(labelText: 'Prix Total'),
+                      keyboardType: TextInputType.number,
+                    ),                    
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Annuler'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      final newCommande = Commande(
+                        statut: _statusController.text,
+                        prix: double.parse(_prixController.text),
+                        projet: _projetController.text,
+                        nombre: int.parse(_nombreController.text),
+                        prixTotal: double.parse(_prixTotalController.text),
+                        nomProduit: _nomProduitController.text,
+                      );
+                      _addCommande(newCommande);
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Ajouter'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
