@@ -67,7 +67,7 @@ class _SalesPageState extends State<SalesPage> {
               return ListTile(
                 title: Text(order.product),
                 subtitle: Text('Status: ${order.status}'),
-                trailing: Text('Price:  ${order.price}'),
+                trailing: Text('Price: \$${order.price.toStringAsFixed(2)}'),
                 onTap: () {
                   _editOrder(index);
                 },
